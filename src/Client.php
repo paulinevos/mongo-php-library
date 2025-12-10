@@ -141,6 +141,7 @@ class Client implements Stringable
         $driverOptions = array_diff_key($driverOptions, ['builderEncoder' => 1, 'typeMap' => 1]);
 
         $this->manager = new Manager($uri, $uriOptions, $driverOptions);
+
         $this->readConcern = $this->manager->getReadConcern();
         $this->readPreference = $this->manager->getReadPreference();
         $this->writeConcern = $this->manager->getWriteConcern();
