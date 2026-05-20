@@ -4253,7 +4253,7 @@ enum Pipelines: string
     JSON;
 
     /**
-     * Stored source
+     * Stored Source
      *
      * @see https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-stage/#examples
      */

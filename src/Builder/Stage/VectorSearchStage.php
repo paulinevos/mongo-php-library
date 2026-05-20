@@ -69,7 +69,7 @@ final class VectorSearchStage implements InputStageInterface, OperatorInterface
      */
     public readonly Optional|int $numCandidates;
 
-    /** @var Optional|bool $returnStoredSource If true, the search returns only the stored source fields configured on the index. The default value is false. */
+    /** @var Optional|bool $returnStoredSource If true, the search returns only the stored source fields configured on the index directly from the index and skips a full document lookup. If omitted, the default value is false. */
     public readonly Optional|bool $returnStoredSource;
 
     /**
@@ -81,7 +81,7 @@ final class VectorSearchStage implements InputStageInterface, OperatorInterface
      * @param Optional|QueryInterface|array $filter Any match query that compares an indexed field with a boolean, date, objectId, number (not decimals), string, or UUID to use as a pre-filter.
      * @param Optional|int $numCandidates This field is required if exact is false or omitted.
      * Number of nearest neighbors to use during the search. Value must be less than or equal to (<=) 10000. You can't specify a number less than the number of documents to return (limit).
-     * @param Optional|bool $returnStoredSource If true, the search returns only the stored source fields configured on the index. The default value is false.
+     * @param Optional|bool $returnStoredSource If true, the search returns only the stored source fields configured on the index directly from the index and skips a full document lookup. If omitted, the default value is false.
      */
     public function __construct(
         string $index,
