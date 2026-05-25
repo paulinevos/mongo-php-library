@@ -457,7 +457,7 @@ final class UnifiedTestRunner
         foreach ($createEntities ?? [] as $entity) {
             $session = $entity->session ?? null;
             if ($session === null) {
-                return false;
+                continue;
             }
 
             if (($session->sessionOptions?->snapshot ?? false) === true) {
