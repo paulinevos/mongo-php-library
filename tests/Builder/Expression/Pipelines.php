@@ -1875,6 +1875,142 @@ enum Pipelines: string
     JSON;
 
     /**
+     * Deserialize Extended JSON Document
+     *
+     * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/deserializeEJSON/#deserialize-extended-json-document
+     */
+    case DeserializeEJSONDeserializeExtendedJSONDocument = <<<'JSON'
+    [
+        {
+            "$match": {
+                "title": "Inception"
+            }
+        },
+        {
+            "$project": {
+                "original": "$$ROOT",
+                "serialized": {
+                    "$serializeEJSON": {
+                        "input": "$$ROOT"
+                    }
+                }
+            }
+        },
+        {
+            "$project": {
+                "title": "$original.title",
+                "deserialized": {
+                    "$deserializeEJSON": {
+                        "input": "$serialized"
+                    }
+                }
+            }
+        }
+    ]
+    JSON;
+
+    /**
+     * Parse JSON String and Deserialize
+     *
+     * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/deserializeEJSON/#parse-json-string-and-deserialize
+     */
+    case DeserializeEJSONParseJSONStringAndDeserialize = <<<'JSON'
+    [
+        {
+            "$documents": [
+                {
+                    "jsonData": "{\"_id\":{\"$oid\":\"507f1f77bcf86cd799439011\"},\"title\":\"The Matrix\",\"year\":{\"$numberInt\":\"1999\"},\"rating\":{\"$numberDouble\":\"8.7\"}}"
+                }
+            ]
+        },
+        {
+            "$project": {
+                "parsed": {
+                    "$convert": {
+                        "input": "$jsonData",
+                        "to": "object"
+                    }
+                }
+            }
+        },
+        {
+            "$project": {
+                "movie": {
+                    "$deserializeEJSON": {
+                        "input": "$parsed"
+                    }
+                }
+            }
+        }
+    ]
+    JSON;
+
+    /**
+     * Deserialize Specific Fields
+     *
+     * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/deserializeEJSON/#deserialize-specific-fields
+     */
+    case DeserializeEJSONDeserializeSpecificFields = <<<'JSON'
+    [
+        {
+            "$match": {
+                "title": "Inception"
+            }
+        },
+        {
+            "$project": {
+                "title": {
+                    "$numberInt": "1"
+                },
+                "serializedMetadata": {
+                    "$serializeEJSON": {
+                        "input": {
+                            "releaseDate": "$released",
+                            "runtime": "$runtime",
+                            "rating": "$imdb.rating"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "$project": {
+                "title": {
+                    "$numberInt": "1"
+                },
+                "metadata": {
+                    "$deserializeEJSON": {
+                        "input": "$serializedMetadata"
+                    }
+                }
+            }
+        }
+    ]
+    JSON;
+
+    /**
+     * Use onError for Error Handling
+     *
+     * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/deserializeEJSON/#use-onerror-for-error-handling
+     */
+    case DeserializeEJSONUseOnErrorForErrorHandling = <<<'JSON'
+    [
+        {
+            "$project": {
+                "result": {
+                    "$deserializeEJSON": {
+                        "input": "$ejsonField",
+                        "onError": {
+                            "error": "Invalid EJSON format"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+    JSON;
+
+    /**
      * Example
      *
      * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/divide/#examples
@@ -4622,6 +4758,144 @@ enum Pipelines: string
                 "seconds": {
                     "$second": {
                         "date": "$date"
+                    }
+                }
+            }
+        }
+    ]
+    JSON;
+
+    /**
+     * Canonical Extended JSON Example
+     *
+     * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/serializeEJSON/#canonical-extended-json-example
+     */
+    case SerializeEJSONCanonicalExtendedJSONExample = <<<'JSON'
+    [
+        {
+            "$match": {
+                "title": "Inception"
+            }
+        },
+        {
+            "$project": {
+                "ejson": {
+                    "$serializeEJSON": {
+                        "input": "$$ROOT"
+                    }
+                }
+            }
+        }
+    ]
+    JSON;
+
+    /**
+     * Relaxed Extended JSON Example
+     *
+     * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/serializeEJSON/#relaxed-extended-json-example
+     */
+    case SerializeEJSONRelaxedExtendedJSONExample = <<<'JSON'
+    [
+        {
+            "$match": {
+                "title": "Inception"
+            }
+        },
+        {
+            "$project": {
+                "ejson": {
+                    "$serializeEJSON": {
+                        "input": "$$ROOT",
+                        "relaxed": true
+                    }
+                }
+            }
+        }
+    ]
+    JSON;
+
+    /**
+     * Convert to JSON String
+     *
+     * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/serializeEJSON/#convert-to-json-string
+     */
+    case SerializeEJSONConvertToJSONString = <<<'JSON'
+    [
+        {
+            "$match": {
+                "title": "The Godfather"
+            }
+        },
+        {
+            "$project": {
+                "title": {
+                    "$numberInt": "1"
+                },
+                "jsonString": {
+                    "$toString": {
+                        "$serializeEJSON": {
+                            "input": "$$ROOT"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+    JSON;
+
+    /**
+     * Serialize Specific Fields
+     *
+     * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/serializeEJSON/#serialize-specific-fields
+     */
+    case SerializeEJSONSerializeSpecificFields = <<<'JSON'
+    [
+        {
+            "$match": {
+                "year": {
+                    "$gte": {
+                        "$numberInt": "2010"
+                    }
+                }
+            }
+        },
+        {
+            "$project": {
+                "title": {
+                    "$numberInt": "1"
+                },
+                "metadataEJSON": {
+                    "$serializeEJSON": {
+                        "input": {
+                            "releaseDate": "$released",
+                            "runtime": "$runtime",
+                            "imdbRating": "$imdb.rating"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+    JSON;
+
+    /**
+     * Use onError for Error Handling
+     *
+     * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/serializeEJSON/#use-onerror-for-error-handling
+     */
+    case SerializeEJSONUseOnErrorForErrorHandling = <<<'JSON'
+    [
+        {
+            "$project": {
+                "title": {
+                    "$numberInt": "1"
+                },
+                "ejson": {
+                    "$serializeEJSON": {
+                        "input": "$customField",
+                        "onError": {
+                            "error": "Serialization failed"
+                        }
                     }
                 }
             }
